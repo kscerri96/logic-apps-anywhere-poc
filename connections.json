@@ -1,0 +1,18 @@
+{
+  "managedApiConnections": {
+    "office365": {
+      "api": {
+        "id": "/subscriptions/308a4c53-eca0-42a4-b05f-c43bd25270e9/providers/Microsoft.Web/locations/westeurope/managedApis/office365"
+      },
+      "connection": {
+        "id": "/subscriptions/308a4c53-eca0-42a4-b05f-c43bd25270e9/resourceGroups/invictus-dev-sft-invictusframework/providers/Microsoft.Web/connections/office365"
+      },
+      "connectionRuntimeUrl": "https://eb1c4bd34e9702d9.10.common.logic-westeurope.azure-apihub.net/apim/office365/2f7ba4e45af84aa5ad643605445eb946/",
+      "authentication": {
+        "type": "Raw",
+        "scheme": "Key",
+        "parameter": "@appsetting('office365-connectionKey')"
+      }
+    }
+  }
+}
