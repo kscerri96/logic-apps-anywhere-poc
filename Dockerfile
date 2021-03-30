@@ -1,17 +1,17 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1.300 AS build
-WORKDIR /src
-RUN ls .
-COPY . .
-RUN dotnet publish logappsanywhere.csproj --configuration release --output app
- 
-FROM mcr.microsoft.com/azure-functions/dotnet:3.0.13614-appservice as runtime
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS installer-env
+
+COPY . /src/dotnet-function-app
+RUN cd /src/dotnet-function-app && \
+    mkdir -p /home/site/wwwroot && \
+    dotnet publish *.csproj --output /home/site/wwwroot
+
+# To enable ssh & remote debugging on app service change the base image to the one below
+# FROM mcr.microsoft.com/azure-functions/dotnet:3.0-appservice
+FROM mcr.microsoft.com/azure-functions/dotnet:3.0
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
-    AzureFunctionsJobHost__Logging__Console__IsEnabled=true \
-    FUNCTIONS_V2_COMPATIBILITY_MODE=true
-# Set required environment variables, see https://github.com/Azure/logicapps/issues/129
+    AzureFunctionsJobHost__Logging__Console__IsEnabled=true
 ENV WEBSITE_HOSTNAME localhost 
 ENV WEBSITE_SITE_NAME logappsanywhere
 ENV AZURE_FUNCTIONS_ENVIRONMENT Development
- 
-COPY --from=build /src/app/bin /home/site/wwwroot
-RUN ls /home/site/wwwroot
+
+COPY --from=installer-env ["/home/site/wwwroot", "/home/site/wwwroot"]
